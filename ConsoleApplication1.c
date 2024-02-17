@@ -8,6 +8,7 @@
 #define COLOR4 (Color){ 135, 10, 93, 255 } 
 #define COLOR5 (Color){ 106, 189, 200, 255 } 
 #define COLOR6 (Color){ 0, 0, 0, 150 } 
+#define COLOR7 (Color){ 0, 0, 0, 20 } 
 
 typedef enum GameScreen {starting_screen, single_player, multi_player} GameScreen;
 
@@ -123,13 +124,13 @@ void drawGame() {
 		}
 	}
 
-	/* GRIDLINES
+	//GRIDLINES
 	for (int i = 0; i < screenWidth / SQUARE + 1; i++) {
-		DrawLineV((Vector2) { SQUARE* i + offset.x, offset.y }, (Vector2) { SQUARE* i + offset.x, screenHeight - offset.y }, BLACK);
+		DrawLineV((Vector2) { SQUARE* i + offset.x, offset.y }, (Vector2) { SQUARE* i + offset.x, screenHeight - offset.y }, COLOR7);
 	}
 	for (int i = 0; i < screenWidth / SQUARE + 1; i++) {
-		DrawLineV((Vector2) { offset.x, SQUARE* i + offset.y }, (Vector2) { screenWidth - offset.x, SQUARE* i + offset.y }, BLACK);
-	}*/
+		DrawLineV((Vector2) { offset.x, SQUARE* i + offset.y }, (Vector2) { screenWidth - offset.x, SQUARE* i + offset.y }, COLOR7);
+	}
 	switch (current_screen)
 	{
 	case starting_screen:
@@ -213,10 +214,10 @@ void updateGame() {
 			pacman_[0].rect_right.rectangle.width = SQUARE - 5;
 			pacman_[0].rect_left.rectangle.width = SQUARE - 5;
 
-			pacman_[0].rect_down.color = WHITE;
-			pacman_[0].rect_up.color = WHITE;
-			pacman_[0].rect_right.color = WHITE;
-			pacman_[0].rect_left.color = WHITE;
+			pacman_[0].rect_down.color = COLOR6;
+			pacman_[0].rect_up.color = COLOR6;
+			pacman_[0].rect_right.color = COLOR6;
+			pacman_[0].rect_left.color = COLOR6;
 
 			if (framesCounter % 5 == 0) {
 				if ((IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) && (pacman_[0].position.x + SQUARE / 2 < screenWidth) && pacman_[0].collision_right == false) {
@@ -288,10 +289,10 @@ void updateGame() {
 			pacman_[0].rect_right.rectangle.width = SQUARE - 5;
 			pacman_[0].rect_left.rectangle.width = SQUARE - 5;
 
-			pacman_[0].rect_down.color = WHITE;
-			pacman_[0].rect_up.color = WHITE;
-			pacman_[0].rect_right.color = WHITE;
-			pacman_[0].rect_left.color = WHITE;
+			pacman_[0].rect_down.color = COLOR6;
+			pacman_[0].rect_up.color = COLOR6;
+			pacman_[0].rect_right.color = COLOR6;
+			pacman_[0].rect_left.color = COLOR6;
 
 			if (framesCounter % 5 == 0) {
 				if (IsKeyDown(KEY_D) && (pacman_[0].position.x + SQUARE / 2 < screenWidth) && pacman_[0].collision_right == false) {
@@ -351,10 +352,10 @@ void updateGame() {
 			pacman_[1].rect_right.rectangle.width = SQUARE - 5;
 			pacman_[1].rect_left.rectangle.width = SQUARE - 5;
 
-			pacman_[1].rect_down.color = WHITE;
-			pacman_[1].rect_up.color = WHITE;
-			pacman_[1].rect_right.color = WHITE;
-			pacman_[1].rect_left.color = WHITE;
+			pacman_[1].rect_down.color = COLOR6;
+			pacman_[1].rect_up.color = COLOR6;
+			pacman_[1].rect_right.color = COLOR6;
+			pacman_[1].rect_left.color = COLOR6;
 
 			if (framesCounter % 5 == 0) {
 				if (IsKeyDown(KEY_RIGHT) && (pacman_[1].position.x + SQUARE / 2 < screenWidth) && pacman_[1].collision_right == false) {
@@ -481,10 +482,10 @@ void InitGame() {
 }
 
 void draw_first_pacman_game() {
-		//DrawRectangle(pacman_[0].rect_right.rectangle.x, pacman_[0].rect_right.rectangle.y, pacman_[0].rect_right.rectangle.width, pacman_[0].rect_right.rectangle.height, pacman_[0].rect_right.color); //right
-		//DrawRectangle(pacman_[0].rect_left.rectangle.x, pacman_[0].rect_left.rectangle.y, pacman_[0].rect_left.rectangle.width, pacman_[0].rect_left.rectangle.height, pacman_[0].rect_left.color); //left
-		//DrawRectangle(pacman_[0].rect_up.rectangle.x, pacman_[0].rect_up.rectangle.y, pacman_[0].rect_up.rectangle.width, pacman_[0].rect_up.rectangle.height, pacman_[0].rect_up.color); //up
-		//DrawRectangle(pacman_[0].rect_down.rectangle.x, pacman_[0].rect_down.rectangle.y, pacman_[0].rect_down.rectangle.width, pacman_[0].rect_down.rectangle.height, pacman_[0].rect_down.color); //down
+		DrawRectangle(pacman_[0].rect_right.rectangle.x, pacman_[0].rect_right.rectangle.y, pacman_[0].rect_right.rectangle.width, pacman_[0].rect_right.rectangle.height, pacman_[0].rect_right.color); //right
+		DrawRectangle(pacman_[0].rect_left.rectangle.x, pacman_[0].rect_left.rectangle.y, pacman_[0].rect_left.rectangle.width, pacman_[0].rect_left.rectangle.height, pacman_[0].rect_left.color); //left
+		DrawRectangle(pacman_[0].rect_up.rectangle.x, pacman_[0].rect_up.rectangle.y, pacman_[0].rect_up.rectangle.width, pacman_[0].rect_up.rectangle.height, pacman_[0].rect_up.color); //up
+		DrawRectangle(pacman_[0].rect_down.rectangle.x, pacman_[0].rect_down.rectangle.y, pacman_[0].rect_down.rectangle.width, pacman_[0].rect_down.rectangle.height, pacman_[0].rect_down.color); //down
 	
 	if (current_screen == single_player) {
 		if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))) {
@@ -527,10 +528,10 @@ void draw_first_pacman_game() {
 }
 
 void draw_second_pacman_game() {
-	//DrawRectangle(pacman_[1].rect_right.rectangle.x, pacman_[1].rect_right.rectangle.y, pacman_[1].rect_right.rectangle.width, pacman_[1].rect_right.rectangle.height, pacman_[1].rect_right.color); //right
-	//DrawRectangle(pacman_[1].rect_left.rectangle.x, pacman_[1]rect_left.rectangle.y, pacman_[1].rect_left.rectangle.width, pacman_[1].rect_left.rectangle.height, pacman_[1].rect_left.color); //left
-	//DrawRectangle(pacman_[1].rect_up.rectangle.x, pacman_[1].rect_up.rectangle.y, pacman_[1].rect_up.rectangle.width, pacman_[1].rect_up.rectangle.height, pacman_[1].rect_up.color); //up
-	//DrawRectangle(pacman_[1].rect_down.rectangle.x, pacman_[1].rect_down.rectangle.y, pacman_[1].rect_down.rectangle.width, pacman_[1].rect_down.rectangle.height, pacman_[1].rect_down.color); //down
+	DrawRectangle(pacman_[1].rect_right.rectangle.x, pacman_[1].rect_right.rectangle.y, pacman_[1].rect_right.rectangle.width, pacman_[1].rect_right.rectangle.height, pacman_[1].rect_right.color); //right
+	DrawRectangle(pacman_[1].rect_left.rectangle.x, pacman_[1].rect_left.rectangle.y, pacman_[1].rect_left.rectangle.width, pacman_[1].rect_left.rectangle.height, pacman_[1].rect_left.color); //left
+	DrawRectangle(pacman_[1].rect_up.rectangle.x, pacman_[1].rect_up.rectangle.y, pacman_[1].rect_up.rectangle.width, pacman_[1].rect_up.rectangle.height, pacman_[1].rect_up.color); //up
+	DrawRectangle(pacman_[1].rect_down.rectangle.x, pacman_[1].rect_down.rectangle.y, pacman_[1].rect_down.rectangle.width, pacman_[1].rect_down.rectangle.height, pacman_[1].rect_down.color); //down
 	
 	if (IsKeyDown(KEY_DOWN)) {
 		DrawCircleSector(pacman_[1].position, pacman_[1].radius, 0, 45, 360, pacman_[1].color);
