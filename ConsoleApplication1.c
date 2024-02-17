@@ -2,12 +2,19 @@
 #include <raymath.h>
 
 #define SQUARE 40
+#define COLOR1 (Color){ 3, 6, 45, 255 } 
+#define COLOR2 (Color){ 50, 7, 73, 255 } 
+#define COLOR3 (Color){ 104, 4, 75, 255 } 
+#define COLOR4 (Color){ 135, 10, 93, 255 } 
+#define COLOR5 (Color){ 106, 189, 200, 255 } 
+
 
 typedef struct bait {
 	bool active;
 	Vector2 position;
 	int radius;
 	Color color;
+	int crypto_num;
 }bait;
 
 typedef struct block {
@@ -30,6 +37,9 @@ typedef struct pacman {
 	bool collision_right;
 	bool collision_left;
 }pacman;
+
+static Image image[3];
+static Texture2D texture[3];
 
 static int x_counter = 0;
 static pacman pacman1 = { 0 };
@@ -89,7 +99,7 @@ int main() {
 void drawGame() {
 	BeginDrawing();
 
-	ClearBackground(BLACK);
+	ClearBackground(COLOR5);
 	if (!gameOver) {
 
 		DrawRectangle(pacman1.rect_right.rectangle.x, pacman1.rect_right.rectangle.y, pacman1.rect_right.rectangle.width, pacman1.rect_right.rectangle.height, pacman1.rect_right.color); //right
@@ -118,11 +128,26 @@ void drawGame() {
 		else {
 			DrawCircleSector(pacman1.position, pacman1.radius, 45, 315, 360, pacman1.color);
 		}
-				
-		DrawCircleV(food.position, food.radius, food.color);
+
+		/*for (size_t i = 0; i < 3; i++)
+		{
+			DrawTexture(texture[i], food.position.x - 15, food.position.y - 15, WHITE);
+		}*/
+		if (food.crypto_num == 0) {
+			DrawTexture(texture[0], food.position.x - 15, food.position.y - 15, WHITE);
+		}
+		else if (food.crypto_num == 1) {
+			DrawTexture(texture[1], food.position.x - 15, food.position.y - 15, WHITE);
+		}
+		else if (food.crypto_num == 2) {
+			DrawTexture(texture[2], food.position.x - 15, food.position.y - 15, WHITE);
+		}
+		
+		//DrawCircleV(food.position, food.radius, food.color);
+		
 		DrawText(TextFormat("Point: %i", point), 1350, 0, 40, RAYWHITE);
 		DrawText(TextFormat("x_counter %i", x_counter), 1000, 750, 40, RAYWHITE);
-		DrawText(TextFormat(" Timer: %1i", timeCounter), 20, 700, 40, RED);
+		DrawText(TextFormat("Timer: %1i", timeCounter), 20, 700, 40, RED);
 
 		for (int i = 0; i < screenWidth / SQUARE + 1; i++) {
 			DrawLineV((Vector2) { SQUARE* i + offset.x, offset.y }, (Vector2) { SQUARE* i + offset.x, screenHeight - offset.y }, WHITE);
@@ -134,6 +159,8 @@ void drawGame() {
 	if (gameOver) {
 		DrawText("GAMEOVER!!", 250, 500, 60, RAYWHITE);
 	}
+
+	framesCounter++;
 	EndDrawing();
 }
 
@@ -159,10 +186,10 @@ void updateGame() {
 	pacman1.rect_right.rectangle.width = SQUARE-5;
 	pacman1.rect_left.rectangle.width = SQUARE-5;
 
-	pacman1.rect_down.color = GREEN;
-	pacman1.rect_up.color = DARKBROWN;
-	pacman1.rect_right.color = GREEN;
-	pacman1.rect_left.color = GREEN;
+	pacman1.rect_down.color = RAYWHITE;
+	pacman1.rect_up.color = RAYWHITE;
+	pacman1.rect_right.color = RAYWHITE;
+	pacman1.rect_left.color = RAYWHITE;
 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j < 38; j++) {
@@ -177,6 +204,9 @@ void updateGame() {
 			}
 			if (CheckCollisionRecs(blocks[i][j].rectangle, pacman1.rect_left.rectangle)) {
 				pacman1.collision_left = true;
+			}
+			if (CheckCollisionCircleRec(food.position, food.radius, blocks[i][j].rectangle)) {
+				food.active = false;
 			}
 		}
 	}
@@ -199,16 +229,11 @@ void updateGame() {
 		point++;
 		food.active = false;
 	}
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 38; j++) {
-			
-		}
-	}
+
 	if (!food.active) {
 		food.active = true;
 		food.position = (Vector2){ GetRandomValue(0, screenWidth - 1), GetRandomValue(0, screenHeight - 1) };
-		food.color = RED;
-		food.radius = 10;
+		food.crypto_num = GetRandomValue(0, 2);
 	}
 	framesCounter++;
 
@@ -228,7 +253,7 @@ void InitGame() {
 	timeCounter = (int)(framesCounter / 60);
 	gameOver = false;
 
-
+	//gridlines
 	offset.x = screenWidth % SQUARE;
 	offset.y = screenHeight % SQUARE;
 
@@ -236,7 +261,7 @@ void InitGame() {
 	pacman1.position.x = (float)screenWidth / 2 + SQUARE / 2;
 	pacman1.position.y = (float)screenHeight / 2 + SQUARE / 2;
 	pacman1.radius = 19.5;
-	pacman1.color = YELLOW;
+	pacman1.color = GOLD;
 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j < 38; j++) {
@@ -246,13 +271,44 @@ void InitGame() {
 				blocks[i][j].rectangle.width = SQUARE;
 				blocks[i][j].rectangle.height = SQUARE;
 			}
-			if ((i + j) % 2 == 0) {
-				blocks[i][j].color = RED;
+			if ((i + j) % 4 == 0) {
+				blocks[i][j].color = COLOR1;
 			}
-			else if ((i + j) % 2 == 1) {
-				blocks[i][j].color = BLUE;
+			else if ((i + j) % 4 == 1) {
+				blocks[i][j].color = COLOR2;
+			}
+			else if ((i + j) % 4 == 2) {
+				blocks[i][j].color = COLOR3;
+			}
+			else if ((i + j) % 4 == 3) {
+				blocks[i][j].color = COLOR4;
 			}
 		}
 	}
 
+	//food
+	food.radius = 15;
+	food.color = MAGENTA;
+
+	//btc
+	for (int i = 0; i < 3; i++)
+	{
+		if (i == 0) {
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/btc_resized.png"); // Load image data into CPU memory (RAM)}
+		}  
+		else if(i == 1){
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/etherium.png");  // Load image data into CPU memory (RAM)}
+		}
+		else if (i == 2) {
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/tether.png");  // Load image data into CPU memory (RAM)}
+		}
+		texture[i] = LoadTextureFromImage(image[i]);       // Image converted to texture, GPU memory (RAM -> VRAM)
+		UnloadImage(image[i]);                                    // Unload image data from CPU memory (RAM)
+
+		image[i] = LoadImageFromTexture(texture[i]);                 // Load image from GPU texture (VRAM -> RAM)
+		UnloadTexture(texture[i]);                                // Unload texture from GPU memory (VRAM)
+
+		texture[i] = LoadTextureFromImage(image[i]);                 // Recreate texture from retrieved image data (RAM -> VRAM)
+		UnloadImage(image[i]);                                    // Unload retrieved image data from CPU memory (RAM)
+	}
 }

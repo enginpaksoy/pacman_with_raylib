@@ -19,4 +19,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="btc_resized.png">
+      <Filter>Source Files</Filter>
+    </Image>
+    <Image Include="etherium.png">
+      <Filter>Source Files</Filter>
+    </Image>
+    <Image Include="tether.png">
+      <Filter>Source Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
