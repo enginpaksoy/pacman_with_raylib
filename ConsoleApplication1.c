@@ -19,17 +19,19 @@ typedef struct pacman {
 	Vector2 position;
 	int radius;
 	Color color;
+	
+	block rect_up;
+	block rect_down;
+	block rect_left;
+	block rect_right;
 
-	Vector2 pos_up;
-	bool up_collision;
-	Vector2 pos_down;
-	bool down_collision;
-	Vector2 pos_right;
-	bool right_collision;
-	Vector2 pos_left;
-	bool left_collision;
+	bool collision_up;
+	bool collision_down;
+	bool collision_right;
+	bool collision_left;
 }pacman;
 
+static int x_counter = 0;
 static pacman pacman1 = { 0 };
 static bait food = { 0 };
 static block blocks[20][38] = {0};
@@ -57,6 +59,8 @@ static int matrix[20][38] = { {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 							  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1} };
 
 static int framesCounter;
+static int timeCounter;
+
 //screen variables
 const int screenWidth = 1520;
 const int screenHeight = 800;
@@ -88,35 +92,37 @@ void drawGame() {
 	ClearBackground(BLACK);
 	if (!gameOver) {
 
+		DrawRectangle(pacman1.rect_right.rectangle.x, pacman1.rect_right.rectangle.y, pacman1.rect_right.rectangle.width, pacman1.rect_right.rectangle.height, pacman1.rect_right.color); //right
+		DrawRectangle(pacman1.rect_left.rectangle.x, pacman1.rect_left.rectangle.y, pacman1.rect_left.rectangle.width, pacman1.rect_left.rectangle.height, pacman1.rect_left.color); //left
+		DrawRectangle(pacman1.rect_up.rectangle.x, pacman1.rect_up.rectangle.y, pacman1.rect_up.rectangle.width, pacman1.rect_up.rectangle.height, pacman1.rect_up.color); //up
+		DrawRectangle(pacman1.rect_down.rectangle.x, pacman1.rect_down.rectangle.y, pacman1.rect_down.rectangle.width, pacman1.rect_down.rectangle.height, pacman1.rect_down.color); //down
+
 		for (int i = 0; i < 20; i++) {
 			for (int j = 0; j < 38; j++) {
 				DrawRectangle(blocks[i][j].rectangle.x, blocks[i][j].rectangle.y, blocks[i][j].rectangle.width, blocks[i][j].rectangle.height, blocks[i][j].color);
 			}
 		}
+
 		if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))) {
-			DrawCircleSector(pacman1.position, pacman1.radius, 0, 45, 360, YELLOW);
-			DrawCircleSector(pacman1.position, pacman1.radius, 135, 360, 360, YELLOW);
+			DrawCircleSector(pacman1.position, pacman1.radius, 0, 45, 360, pacman1.color);
+			DrawCircleSector(pacman1.position, pacman1.radius, 135, 360, 360, pacman1.color);
 		}
 		else if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))) {
-			DrawCircleSector(pacman1.position, pacman1.radius, 0, 135, 360, YELLOW);
-			DrawCircleSector(pacman1.position, pacman1.radius, 225, 360, 360, YELLOW);
+			DrawCircleSector(pacman1.position, pacman1.radius, 0, 135, 360, pacman1.color);
+			DrawCircleSector(pacman1.position, pacman1.radius, 225, 360, 360, pacman1.color);
 		}
 		else if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W))) {
-			DrawCircleSector(pacman1.position, pacman1.radius, 0, 225, 360, YELLOW);
-			DrawCircleSector(pacman1.position, pacman1.radius, 315, 360, 360, YELLOW);
+			DrawCircleSector(pacman1.position, pacman1.radius, 0, 225, 360, pacman1.color);
+			DrawCircleSector(pacman1.position, pacman1.radius, 315, 360, 360, pacman1.color);
 		}
 		else {
-			DrawCircleSector(pacman1.position, pacman1.radius, 45, 315, 360, YELLOW);
+			DrawCircleSector(pacman1.position, pacman1.radius, 45, 315, 360, pacman1.color);
 		}
-		DrawCircleV(pacman1.pos_right, 15, BLUE); //right
-		DrawCircleV(pacman1.pos_left, 15, BLUE); //left
-		DrawCircleV(pacman1.pos_up, 15, BLUE); //up
-		DrawCircleV(pacman1.pos_down, 15, BLUE); //down
 				
 		DrawCircleV(food.position, food.radius, food.color);
 		DrawText(TextFormat("Point: %i", point), 1350, 0, 40, RAYWHITE);
-
-		DrawText(TextFormat(" Timer: %1i", framesCounter / 60), 20, 700, 40, RED);
+		DrawText(TextFormat("x_counter %i", x_counter), 1000, 750, 40, RAYWHITE);
+		DrawText(TextFormat(" Timer: %1i", timeCounter), 20, 700, 40, RED);
 
 		for (int i = 0; i < screenWidth / SQUARE + 1; i++) {
 			DrawLineV((Vector2) { SQUARE* i + offset.x, offset.y }, (Vector2) { SQUARE* i + offset.x, screenHeight - offset.y }, WHITE);
@@ -134,33 +140,60 @@ void drawGame() {
 
 void updateGame() {
 	
-	pacman1.pos_down.x = pacman1.position.x - SQUARE / 2;
-	pacman1.pos_down.y = pacman1.position.y + SQUARE / 2;
-	pacman1.pos_up.x = pacman1.position.x - SQUARE/2;
-	pacman1.pos_up.y = pacman1.position.y - 3*SQUARE/2;
-	pacman1.pos_right.x = pacman1.position.x + SQUARE / 2;
-	pacman1.pos_right.y = pacman1.position.y - SQUARE/2;
-	pacman1.pos_left.x = pacman1.position.x - 3*SQUARE/2;
-	pacman1.pos_left.y = pacman1.position.y - SQUARE/2;
+	pacman1.rect_down.rectangle.x = pacman1.position.x - SQUARE / 2 + 2.5f;
+	pacman1.rect_down.rectangle.y = pacman1.position.y + SQUARE / 2 + 2.5f;
+	pacman1.rect_up.rectangle.x = pacman1.position.x - SQUARE / 2 + 2.5f;
+	pacman1.rect_up.rectangle.y = pacman1.position.y - 3 * SQUARE / 2 + 2.5f;
+	pacman1.rect_right.rectangle.x = pacman1.position.x + SQUARE / 2 + 2.5f ;
+	pacman1.rect_right.rectangle.y = pacman1.position.y - SQUARE / 2 + 2.5f;
+	pacman1.rect_left.rectangle.x = pacman1.position.x - 3 * SQUARE / 2 + 2.5f;
+	pacman1.rect_left.rectangle.y = pacman1.position.y - SQUARE / 2 + 2.5;
+
+	pacman1.rect_down.rectangle.height = SQUARE-5;
+	pacman1.rect_up.rectangle.height = SQUARE-5;
+	pacman1.rect_right.rectangle.height = SQUARE-5;
+	pacman1.rect_left.rectangle.height = SQUARE-5;
+
+	pacman1.rect_down.rectangle.width = SQUARE-5;
+	pacman1.rect_up.rectangle.width = SQUARE-5;
+	pacman1.rect_right.rectangle.width = SQUARE-5;
+	pacman1.rect_left.rectangle.width = SQUARE-5;
+
+	pacman1.rect_down.color = GREEN;
+	pacman1.rect_up.color = DARKBROWN;
+	pacman1.rect_right.color = GREEN;
+	pacman1.rect_left.color = GREEN;
 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j < 38; j++) {
-			
+			if (CheckCollisionRecs(blocks[i][j].rectangle, pacman1.rect_down.rectangle)) {
+				pacman1.collision_down = true;
+			}
+			if (CheckCollisionRecs(blocks[i][j].rectangle, pacman1.rect_up.rectangle)) {
+				pacman1.collision_up = true;
+			}
+			if (CheckCollisionRecs(blocks[i][j].rectangle, pacman1.rect_right.rectangle)) {
+				pacman1.collision_right = true;
+			}
+			if (CheckCollisionRecs(blocks[i][j].rectangle, pacman1.rect_left.rectangle)) {
+				pacman1.collision_left = true;
+			}
 		}
 	}
 
-		
-	if ((IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) && (pacman1.position.x + SQUARE / 2 < screenWidth) && pacman1.right_collision == false) {
-		pacman1.position.x += 40.0f;
-	}
-	if ((IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A)) && (pacman1.position.x - SQUARE / 2 > 0) && pacman1.left_collision == false) {
-		pacman1.position.x -= 40.0f;
-	}
-	if ((IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) && (pacman1.position.y - SQUARE / 2 > 0) && pacman1.up_collision == false) {
-		pacman1.position.y -= 40.0f;
-	}
-	if ((IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S)) && (pacman1.position.y + SQUARE / 2 < screenHeight) && pacman1.down_collision == false) {
-		pacman1.position.y += 40.0f;
+	if (framesCounter % 10 == 0) {
+		if ((IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) && (pacman1.position.x + SQUARE / 2 < screenWidth) && pacman1.collision_right == false && GetTime()) {
+			pacman1.position.x += 40.0f;
+		}
+		else if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) && (pacman1.position.x - SQUARE / 2 > 0) && pacman1.collision_left == false) {
+			pacman1.position.x -= 40.0f;
+		}
+		else if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) && (pacman1.position.y - SQUARE / 2 > 0) && pacman1.collision_up == false) {
+			pacman1.position.y -= 40.0f;
+		}
+		else if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) && (pacman1.position.y + SQUARE / 2 < screenHeight) && pacman1.collision_down == false) {
+			pacman1.position.y += 40.0f;
+		}
 	}
 	if (CheckCollisionCircles(pacman1.position, pacman1.radius, food.position, food.radius) == true) {
 		point++;
@@ -178,6 +211,11 @@ void updateGame() {
 		food.radius = 10;
 	}
 	framesCounter++;
+
+	pacman1.collision_down = false;
+	pacman1.collision_up = false;
+	pacman1.collision_right = false;
+	pacman1.collision_left = false;
 }
 
 void updateDrawFrame() {
@@ -187,6 +225,7 @@ void updateDrawFrame() {
 
 void InitGame() {
 	framesCounter = 0;
+	timeCounter = (int)(framesCounter / 60);
 	gameOver = false;
 
 
@@ -197,6 +236,7 @@ void InitGame() {
 	pacman1.position.x = (float)screenWidth / 2 + SQUARE / 2;
 	pacman1.position.y = (float)screenHeight / 2 + SQUARE / 2;
 	pacman1.radius = 19.5;
+	pacman1.color = YELLOW;
 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j < 38; j++) {
