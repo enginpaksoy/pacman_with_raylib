@@ -11,12 +11,15 @@
 #define COLOR7 (Color){ 0, 0, 0, 20 } 
 
 typedef enum GameScreen {starting_screen, single_player, multi_player} GameScreen;
+typedef enum crypto{bitcoin, ether, tether, doge} crypto;
 
 typedef struct bait {
 	bool active;
 	Vector2 position;
 	int radius;
 	Color color;
+	
+	enum crypto coin;
 	int crypto_num;
 }bait;
 
@@ -235,13 +238,30 @@ void updateGame() {
 			}
 
 			if (CheckCollisionCircles(pacman_[0].position, pacman_[0].radius, food[0].position, food[0].radius)) {
-				pacman_[0].point++;
+				if (food[0].coin == bitcoin) {
+					pacman_[0].point += 10;
+				}
+				else if (food[0].coin == ether) {
+					pacman_[0].point += 5;
+				}
+				else if (food[0].coin == tether) {
+					pacman_[0].point += 2;
+				}
+				else if (food[0].coin == doge) {
+					if (GetRandomValue(0,4) % 2 == 0) {
+						pacman_[0].point += 8;
+					}
+					else {
+						pacman_[0].point -= 8;
+					}
+				}
 				food[0].active = false;
 			}
 			if (!food[0].active) {
 				food[0].active = true;
 				food[0].position = (Vector2){GetRandomValue(0, screenWidth - 1), GetRandomValue(0, screenHeight - 1)};
 				food[0].crypto_num = GetRandomValue(0, 3);
+				food[0].coin = food[0].crypto_num;
 			}
 
 		} break;
@@ -375,7 +395,23 @@ void updateGame() {
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 2; j++) {
 					if (CheckCollisionCircles(pacman_[i].position, pacman_[i].radius, food[j].position, food[j].radius)) {
-						pacman_[i].point++;
+						if (food[j].coin == bitcoin) {
+							pacman_[i].point += 10;
+						}
+						else if (food[j].coin == ether) {
+							pacman_[i].point += 5;
+						}
+						else if (food[j].coin == tether) {
+							pacman_[i].point += 2;
+						}
+						else if (food[j].coin == doge) {
+							if (GetRandomValue(0, 4) % 2 == 0) {
+								pacman_[i].point += 8;
+							}
+							else {
+								pacman_[i].point -= 8;
+							}
+						}
 						food[j].active = false;
 					}
 				}
@@ -385,6 +421,7 @@ void updateGame() {
 					food[i].active = true;
 					food[i].position = (Vector2){ GetRandomValue(0, screenWidth - 1), GetRandomValue(0, screenHeight - 1) };
 					food[i].crypto_num = GetRandomValue(0, 3);
+					food[i].coin = food[i].crypto_num;
 				}
 			}
 		} break;
