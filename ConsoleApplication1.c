@@ -1,4 +1,6 @@
 ﻿#include <raylib.h>
+#include <raymath.h>
+
 #define SQUARE 40
 
 typedef struct bait {
@@ -7,6 +9,11 @@ typedef struct bait {
 	int radius;
 	Color color;
 }bait;
+
+typedef struct block {
+	Rectangle rectangle;
+	Color color;
+}block;
 
 typedef struct pacman {
 	Vector2 position;
@@ -25,7 +32,7 @@ typedef struct pacman {
 
 static pacman pacman1 = { 0 };
 static bait food = { 0 };
-static Rectangle blocks[20][38] = {0};
+static block blocks[20][38] = {0};
 static bool gameOver;
 static int point;
 static int matrix[20][38] = { {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -80,6 +87,12 @@ void drawGame() {
 
 	ClearBackground(BLACK);
 	if (!gameOver) {
+
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 38; j++) {
+				DrawRectangle(blocks[i][j].rectangle.x, blocks[i][j].rectangle.y, blocks[i][j].rectangle.width, blocks[i][j].rectangle.height, blocks[i][j].color);
+			}
+		}
 		if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))) {
 			DrawCircleSector(pacman1.position, pacman1.radius, 0, 45, 360, YELLOW);
 			DrawCircleSector(pacman1.position, pacman1.radius, 135, 360, 360, YELLOW);
@@ -99,9 +112,7 @@ void drawGame() {
 		DrawCircleV(pacman1.pos_left, 15, BLUE); //left
 		DrawCircleV(pacman1.pos_up, 15, BLUE); //up
 		DrawCircleV(pacman1.pos_down, 15, BLUE); //down
-
-
-
+				
 		DrawCircleV(food.position, food.radius, food.color);
 		DrawText(TextFormat("Point: %i", point), 1350, 0, 40, RAYWHITE);
 
@@ -122,26 +133,21 @@ void drawGame() {
 
 
 void updateGame() {
+	
+	pacman1.pos_down.x = pacman1.position.x - SQUARE / 2;
+	pacman1.pos_down.y = pacman1.position.y + SQUARE / 2;
+	pacman1.pos_up.x = pacman1.position.x - SQUARE/2;
+	pacman1.pos_up.y = pacman1.position.y - 3*SQUARE/2;
+	pacman1.pos_right.x = pacman1.position.x + SQUARE / 2;
+	pacman1.pos_right.y = pacman1.position.y - SQUARE/2;
+	pacman1.pos_left.x = pacman1.position.x - 3*SQUARE/2;
+	pacman1.pos_left.y = pacman1.position.y - SQUARE/2;
+
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j < 38; j++) {
-			if (matrix[i][j] == 1) {
-				blocks[i][j].x = SQUARE * j;
-				blocks[i][j].y = SQUARE * i;
-				blocks[i][j].width = SQUARE;
-				blocks[i][j].height = SQUARE;
-			}
-			DrawRectangle(blocks[i][j].x, blocks[i][j].y, blocks[i][j].width, blocks[i][j].height, RED);
+			
 		}
 	}
-
-	pacman1.pos_down.x = pacman1.position.x;
-	pacman1.pos_down.y = pacman1.position.y + SQUARE;
-	pacman1.pos_up.x = pacman1.position.x;
-	pacman1.pos_up.y = pacman1.position.y - SQUARE;
-	pacman1.pos_right.x = pacman1.position.x + SQUARE;
-	pacman1.pos_right.y = pacman1.position.y;
-	pacman1.pos_left.x = pacman1.position.x - SQUARE;
-	pacman1.pos_left.y = pacman1.position.y;
 
 		
 	if ((IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) && (pacman1.position.x + SQUARE / 2 < screenWidth) && pacman1.right_collision == false) {
@@ -162,19 +168,7 @@ void updateGame() {
 	}
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j < 38; j++) {
-			if (CheckCollisionPointRec(pacman1.pos_up, blocks[i][j])) {
-				pacman1.up_collision = true;
-			}
-			if (CheckCollisionPointRec(pacman1.pos_down, blocks[i][j])) {
-				pacman1.down_collision = true;
-			}
-			if (CheckCollisionPointRec(pacman1.pos_right, blocks[i][j])) {
-				pacman1.right_collision = true;
-			}
-			if (CheckCollisionPointRec(pacman1.pos_left, blocks[i][j])) {
-				pacman1.left_collision = true;
-			}
-
+			
 		}
 	}
 	if (!food.active) {
@@ -195,6 +189,7 @@ void InitGame() {
 	framesCounter = 0;
 	gameOver = false;
 
+
 	offset.x = screenWidth % SQUARE;
 	offset.y = screenHeight % SQUARE;
 
@@ -202,4 +197,22 @@ void InitGame() {
 	pacman1.position.x = (float)screenWidth / 2 + SQUARE / 2;
 	pacman1.position.y = (float)screenHeight / 2 + SQUARE / 2;
 	pacman1.radius = 19.5;
+
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 38; j++) {
+			if (matrix[i][j] == 1) {
+				blocks[i][j].rectangle.x = SQUARE * j;
+				blocks[i][j].rectangle.y = SQUARE * i;
+				blocks[i][j].rectangle.width = SQUARE;
+				blocks[i][j].rectangle.height = SQUARE;
+			}
+			if ((i + j) % 2 == 0) {
+				blocks[i][j].color = RED;
+			}
+			else if ((i + j) % 2 == 1) {
+				blocks[i][j].color = BLUE;
+			}
+		}
+	}
+
 }
