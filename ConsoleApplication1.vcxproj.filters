@@ -29,5 +29,8 @@
     <Image Include="tether.png">
       <Filter>Source Files</Filter>
     </Image>
+    <Image Include="dogecoin.png">
+      <Filter>Source Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

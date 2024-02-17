@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="btc_resized.png" />
+    <Image Include="dogecoin.png" />
     <Image Include="etherium.png" />
     <Image Include="tether.png" />
   </ItemGroup>
