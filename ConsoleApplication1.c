@@ -152,10 +152,10 @@ void drawGame() {
 		DrawRectangle(0, 0, screenWidth, screenHeight, COLOR6);
 		DrawText("Crypto PAC", 560, 80, 80, GOLD);
 		if(!button_single_Clicked){
-			if (GuiButton((Rectangle) { screenWidth / 2 - 50, screenHeight / 2 - 25, 100, 50 }, button_multi_text)) {
+			if (GuiButton((Rectangle) { screenWidth / 2 - 60, screenHeight / 2 - 25, 120, 50 }, button_multi_text)) {
 				button_multi_Clicked = !button_multi_Clicked;
 				timerSinceMultiButtonPressed = 0.0f;  // Reset timer
-				strcpy(button_multi_text, "Clicked!");
+				strcpy(button_multi_text, "MULTI SELECTED!");
 			}
 
 			if (button_multi_Clicked) {
@@ -175,10 +175,10 @@ void drawGame() {
 		}
 
 		if(!button_multi_Clicked){
-			if (GuiButton((Rectangle) { screenWidth / 2 - 50, screenHeight / 2 - 125, 100, 50 }, button_single_text)) {
+			if (GuiButton((Rectangle) { screenWidth / 2 - 60, screenHeight / 2 - 125, 120, 50 }, button_single_text)) {
 				button_single_Clicked = !button_single_Clicked;
 				timerSinceSingleButtonPressed = 0.0f;  // Reset timer
-				strcpy(button_single_text, "Clicked!");
+				strcpy(button_single_text, "SINGLE SELECTED!");
 			}
 			if (button_single_Clicked) {
 				timerSinceSingleButtonPressed += GetFrameTime();
