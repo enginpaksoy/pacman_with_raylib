@@ -66,6 +66,7 @@ bool button_multi_Clicked = false;
 
 float timerSinceMultiButtonPressed = 0.0f;
 float timerSinceSingleButtonPressed = 0.0f;
+float timerStopwatch = 0.0f;
 float timerGame = 0.0f;
 
 static int matrix[20][38] = { {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -90,7 +91,6 @@ static int matrix[20][38] = { {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 							  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1} };
 
 static int framesCounter;
-static int timeCounter;
 
 //screen variables
 const int screenWidth = 1520;
@@ -128,7 +128,7 @@ int main() {
 
 void drawGame() {
 	BeginDrawing();
-
+	timerGame += GetFrameTime();
 
 	ClearBackground(COLOR5);
 
@@ -149,8 +149,8 @@ void drawGame() {
 	{
 	case starting_screen:
 	{	
-		DrawRectangle(screenWidth / 2 - 200, screenHeight / 2 - 200, 400, 400, COLOR6);
-
+		DrawRectangle(0, 0, screenWidth, screenHeight, COLOR6);
+		DrawText("Crypto PAC", 560, 80, 80, GOLD);
 		if(!button_single_Clicked){
 			if (GuiButton((Rectangle) { screenWidth / 2 - 50, screenHeight / 2 - 25, 100, 50 }, button_multi_text)) {
 				button_multi_Clicked = !button_multi_Clicked;
@@ -195,12 +195,12 @@ void drawGame() {
 			}
 		}
 		if (button_multi_Clicked || button_single_Clicked) {
-			timerGame += GetFrameTime();
+			timerStopwatch += GetFrameTime();
 		}
 		if (button_multi_Clicked || button_single_Clicked) {
-			DrawText(TextFormat("%.2f", 3 - timerGame), 720, 640, 60, GOLD);
+			DrawText(TextFormat("%.2f", 3 - timerStopwatch), 720, 640, 60, GOLD);
 		}
-		if (timerGame > 3.0f) {
+		if (timerStopwatch > 3.0f) {
 			if (button_single_Clicked) {
 				current_screen = single_player;
 			}
@@ -222,8 +222,6 @@ void drawGame() {
 	}
 
 	framesCounter++;
-	timeCounter = framesCounter / 120;
-
 	EndDrawing();
 }
 
@@ -591,10 +589,10 @@ void InitGame() {
 }
 
 void draw_first_pacman_game() {
-	//DrawRectangle(pacman_[0].rect_right.rectangle.x, pacman_[0].rect_right.rectangle.y, pacman_[0].rect_right.rectangle.width, pacman_[0].rect_right.rectangle.height, pacman_[0].rect_right.color); //right
-	//DrawRectangle(pacman_[0].rect_left.rectangle.x, pacman_[0].rect_left.rectangle.y, pacman_[0].rect_left.rectangle.width, pacman_[0].rect_left.rectangle.height, pacman_[0].rect_left.color); //left
-	//DrawRectangle(pacman_[0].rect_up.rectangle.x, pacman_[0].rect_up.rectangle.y, pacman_[0].rect_up.rectangle.width, pacman_[0].rect_up.rectangle.height, pacman_[0].rect_up.color); //up
-	//DrawRectangle(pacman_[0].rect_down.rectangle.x, pacman_[0].rect_down.rectangle.y, pacman_[0].rect_down.rectangle.width, pacman_[0].rect_down.rectangle.height, pacman_[0].rect_down.color); //down
+	DrawRectangle(pacman_[0].rect_right.rectangle.x, pacman_[0].rect_right.rectangle.y, pacman_[0].rect_right.rectangle.width, pacman_[0].rect_right.rectangle.height, pacman_[0].rect_right.color); //right
+	DrawRectangle(pacman_[0].rect_left.rectangle.x, pacman_[0].rect_left.rectangle.y, pacman_[0].rect_left.rectangle.width, pacman_[0].rect_left.rectangle.height, pacman_[0].rect_left.color); //left
+	DrawRectangle(pacman_[0].rect_up.rectangle.x, pacman_[0].rect_up.rectangle.y, pacman_[0].rect_up.rectangle.width, pacman_[0].rect_up.rectangle.height, pacman_[0].rect_up.color); //up
+	DrawRectangle(pacman_[0].rect_down.rectangle.x, pacman_[0].rect_down.rectangle.y, pacman_[0].rect_down.rectangle.width, pacman_[0].rect_down.rectangle.height, pacman_[0].rect_down.color); //down
 
 	if (current_screen == single_player) {
 		if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))) {
@@ -633,7 +631,7 @@ void draw_first_pacman_game() {
 	draw_food(food[0]);
 
 	DrawText(TextFormat("Pacman1: %i", pacman_[0].point), 210, 0, 40, RAYWHITE);
-	DrawText(TextFormat("Timer: %1i", timeCounter), 20, 700, 40, RED);
+	DrawText(TextFormat("Timer: %1.2f", timerGame), 20, 740, 60, GOLD);
 }
 
 void draw_second_pacman_game() {
