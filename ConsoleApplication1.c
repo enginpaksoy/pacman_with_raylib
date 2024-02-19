@@ -10,15 +10,15 @@
 #define COLOR6 (Color){ 0, 0, 0, 150 } 
 #define COLOR7 (Color){ 0, 0, 0, 20 } 
 
-typedef enum GameScreen {starting_screen, single_player, multi_player} GameScreen;
-typedef enum crypto{bitcoin, ether, tether, doge} crypto;
+typedef enum GameScreen { starting_screen, single_player, multi_player } GameScreen;
+typedef enum crypto { bitcoin, ether, tether, doge } crypto;
 
 typedef struct bait {
 	bool active;
 	Vector2 position;
 	int radius;
 	Color color;
-	
+
 	enum crypto coin;
 	int crypto_num;
 }bait;
@@ -33,7 +33,7 @@ typedef struct pacman {
 	int radius;
 	Color color;
 	int point;
-	
+
 	block rect_up;
 	block rect_down;
 	block rect_left;
@@ -53,8 +53,8 @@ static Texture2D texture[4];
 
 static int x_counter = 0;
 static pacman pacman_[2];
-static bait food[2] = {0};
-static block blocks[20][38] = {0};
+static bait food[2] = { 0 };
+static block blocks[20][38] = { 0 };
 static bool gameOver;
 
 static int matrix[20][38] = { {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -71,8 +71,8 @@ static int matrix[20][38] = { {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 							  {1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1},
 							  {1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1},
 							  {1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1},
-							  {1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1},
-							  {1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1},
+							  {1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1},
+							  {1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1},
 							  {1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1},
 							  {1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1},
 							  {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -118,7 +118,7 @@ int main() {
 void drawGame() {
 	BeginDrawing();
 
-	
+
 	ClearBackground(COLOR5);
 
 	for (int i = 0; i < 20; i++) {
@@ -141,7 +141,7 @@ void drawGame() {
 		DrawRectangle(screenWidth / 2 - 40, screenHeight / 2 - 80, 780, 140, COLOR6);
 		DrawText("FOR SINGLEPLAYER PRESS 'SPACE'", screenWidth / 2 - 20, screenHeight / 2 - 20, 40, GOLD);
 		DrawText("FOR MULTIPLAYER PRESS 'ENTER'", screenWidth / 2 - 20, screenHeight / 2 - 60, 40, GOLD);
-		
+
 	} break;
 	case single_player:
 	{
@@ -163,271 +163,271 @@ void drawGame() {
 
 
 void updateGame() {
-	
+
 	switch (current_screen)
 	{
-		case starting_screen:
-		{
-			if (IsKeyPressed(KEY_SPACE)) {
-				current_screen = single_player;
-			}
-			else if (IsKeyPressed(KEY_ENTER)) {
-				current_screen = multi_player;
-			}
-		} break;
-		case single_player:
-		{
+	case starting_screen:
+	{
+		if (IsKeyPressed(KEY_SPACE)) {
+			current_screen = single_player;
+		}
+		else if (IsKeyPressed(KEY_ENTER)) {
+			current_screen = multi_player;
+		}
+	} break;
+	case single_player:
+	{
 
-			for (int i = 0; i < 20; i++) {
-				for (int j = 0; j < 38; j++) {
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_down.rectangle)) {
-						pacman_[0].collision_down = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_up.rectangle)) {
-						pacman_[0].collision_up = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_right.rectangle)) {
-						pacman_[0].collision_right = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_left.rectangle)) {
-						pacman_[0].collision_left = true;
-					}
-					if (CheckCollisionCircleRec(food[0].position, food[0].radius, blocks[i][j].rectangle)) {
-						food[0].active = false;
-					}
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 38; j++) {
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_down.rectangle)) {
+					pacman_[0].collision_down = true;
 				}
-			}
-
-			pacman_[0].rect_down.rectangle.x = pacman_[0].position.x - SQUARE / 2 + 2.5f;
-			pacman_[0].rect_down.rectangle.y = pacman_[0].position.y + SQUARE / 2 + 2.5f;
-			pacman_[0].rect_up.rectangle.x = pacman_[0].position.x - SQUARE / 2 + 2.5f;
-			pacman_[0].rect_up.rectangle.y = pacman_[0].position.y - 3 * SQUARE / 2 + 2.5f;
-			pacman_[0].rect_right.rectangle.x = pacman_[0].position.x + SQUARE / 2 + 2.5f;
-			pacman_[0].rect_right.rectangle.y = pacman_[0].position.y - SQUARE / 2 + 2.5f;
-			pacman_[0].rect_left.rectangle.x = pacman_[0].position.x - 3 * SQUARE / 2 + 2.5f;
-			pacman_[0].rect_left.rectangle.y = pacman_[0].position.y - SQUARE / 2 + 2.5;
-
-			pacman_[0].rect_down.rectangle.height = SQUARE - 5;
-			pacman_[0].rect_up.rectangle.height = SQUARE - 5;
-			pacman_[0].rect_right.rectangle.height = SQUARE - 5;
-			pacman_[0].rect_left.rectangle.height = SQUARE - 5;
-
-			pacman_[0].rect_down.rectangle.width = SQUARE - 5;
-			pacman_[0].rect_up.rectangle.width = SQUARE - 5;
-			pacman_[0].rect_right.rectangle.width = SQUARE - 5;
-			pacman_[0].rect_left.rectangle.width = SQUARE - 5;
-
-			pacman_[0].rect_down.color = COLOR6;
-			pacman_[0].rect_up.color = COLOR6;
-			pacman_[0].rect_right.color = COLOR6;
-			pacman_[0].rect_left.color = COLOR6;
-
-			if (framesCounter % 5 == 0) {
-				if ((IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) && (pacman_[0].position.x + SQUARE / 2 < screenWidth) && pacman_[0].collision_right == false) {
-					pacman_[0].position.x += 40.0f;
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_up.rectangle)) {
+					pacman_[0].collision_up = true;
 				}
-				else if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) && (pacman_[0].position.x - SQUARE / 2 > 0) && pacman_[0].collision_left == false) {
-					pacman_[0].position.x -= 40.0f;
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_right.rectangle)) {
+					pacman_[0].collision_right = true;
 				}
-				else if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) && (pacman_[0].position.y - SQUARE / 2 > 0) && pacman_[0].collision_up == false) {
-					pacman_[0].position.y -= 40.0f;
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_left.rectangle)) {
+					pacman_[0].collision_left = true;
 				}
-				else if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) && (pacman_[0].position.y + SQUARE / 2 < screenHeight) && pacman_[0].collision_down == false) {
-					pacman_[0].position.y += 40.0f;
+				if (CheckCollisionCircleRec(food[0].position, food[0].radius, blocks[i][j].rectangle)) {
+					food[0].active = false;
 				}
 			}
+		}
 
-			if (CheckCollisionCircles(pacman_[0].position, pacman_[0].radius, food[0].position, food[0].radius)) {
-				if (food[0].coin == bitcoin) {
-					pacman_[0].point += 10;
-				}
-				else if (food[0].coin == ether) {
-					pacman_[0].point += 5;
-				}
-				else if (food[0].coin == tether) {
-					pacman_[0].point += 2;
-				}
-				else if (food[0].coin == doge) {
-					if (GetRandomValue(0,4) % 2 == 0) {
-						pacman_[0].point += 8;
-					}
-					else {
-						pacman_[0].point -= 8;
-					}
-				}
-				food[0].active = false;
+		pacman_[0].rect_down.rectangle.x = pacman_[0].position.x - SQUARE / 2 + 2.5f;
+		pacman_[0].rect_down.rectangle.y = pacman_[0].position.y + SQUARE / 2 + 2.5f;
+		pacman_[0].rect_up.rectangle.x = pacman_[0].position.x - SQUARE / 2 + 2.5f;
+		pacman_[0].rect_up.rectangle.y = pacman_[0].position.y - 3 * SQUARE / 2 + 2.5f;
+		pacman_[0].rect_right.rectangle.x = pacman_[0].position.x + SQUARE / 2 + 2.5f;
+		pacman_[0].rect_right.rectangle.y = pacman_[0].position.y - SQUARE / 2 + 2.5f;
+		pacman_[0].rect_left.rectangle.x = pacman_[0].position.x - 3 * SQUARE / 2 + 2.5f;
+		pacman_[0].rect_left.rectangle.y = pacman_[0].position.y - SQUARE / 2 + 2.5;
+
+		pacman_[0].rect_down.rectangle.height = SQUARE - 5;
+		pacman_[0].rect_up.rectangle.height = SQUARE - 5;
+		pacman_[0].rect_right.rectangle.height = SQUARE - 5;
+		pacman_[0].rect_left.rectangle.height = SQUARE - 5;
+
+		pacman_[0].rect_down.rectangle.width = SQUARE - 5;
+		pacman_[0].rect_up.rectangle.width = SQUARE - 5;
+		pacman_[0].rect_right.rectangle.width = SQUARE - 5;
+		pacman_[0].rect_left.rectangle.width = SQUARE - 5;
+
+		pacman_[0].rect_down.color = COLOR6;
+		pacman_[0].rect_up.color = COLOR6;
+		pacman_[0].rect_right.color = COLOR6;
+		pacman_[0].rect_left.color = COLOR6;
+
+		if (framesCounter % 5 == 0) {
+			if ((IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) && (pacman_[0].position.x + SQUARE / 2 < screenWidth) && pacman_[0].collision_right == false) {
+				pacman_[0].position.x += 40.0f;
 			}
-			if (!food[0].active) {
-				food[0].active = true;
-				food[0].position = (Vector2){GetRandomValue(0, screenWidth - 1), GetRandomValue(0, screenHeight - 1)};
-				food[0].crypto_num = GetRandomValue(0, 3);
-				food[0].coin = food[0].crypto_num;
+			else if ((IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) && (pacman_[0].position.x - SQUARE / 2 > 0) && pacman_[0].collision_left == false) {
+				pacman_[0].position.x -= 40.0f;
 			}
-
-		} break;
-		case multi_player:
-		{
-			for (int i = 0; i < 20; i++) {
-				for (int j = 0; j < 38; j++) {
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_down.rectangle)) {
-						pacman_[0].collision_down = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_up.rectangle)) {
-						pacman_[0].collision_up = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_right.rectangle)) {
-						pacman_[0].collision_right = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_left.rectangle)) {
-						pacman_[0].collision_left = true;
-					}
-					if (CheckCollisionCircleRec(food[0].position, food[0].radius, blocks[i][j].rectangle)) {
-						food[0].active = false;
-					}
-					if (CheckCollisionCircleRec(food[1].position, food[1].radius, blocks[i][j].rectangle)) {
-						food[1].active = false;
-					}
-				}
+			else if ((IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) && (pacman_[0].position.y - SQUARE / 2 > 0) && pacman_[0].collision_up == false) {
+				pacman_[0].position.y -= 40.0f;
 			}
+			else if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) && (pacman_[0].position.y + SQUARE / 2 < screenHeight) && pacman_[0].collision_down == false) {
+				pacman_[0].position.y += 40.0f;
+			}
+		}
 
-			pacman_[0].rect_down.rectangle.x = pacman_[0].position.x - SQUARE / 2 + 2.5f;
-			pacman_[0].rect_down.rectangle.y = pacman_[0].position.y + SQUARE / 2 + 2.5f;
-			pacman_[0].rect_up.rectangle.x = pacman_[0].position.x - SQUARE / 2 + 2.5f;
-			pacman_[0].rect_up.rectangle.y = pacman_[0].position.y - 3 * SQUARE / 2 + 2.5f;
-			pacman_[0].rect_right.rectangle.x = pacman_[0].position.x + SQUARE / 2 + 2.5f;
-			pacman_[0].rect_right.rectangle.y = pacman_[0].position.y - SQUARE / 2 + 2.5f;
-			pacman_[0].rect_left.rectangle.x = pacman_[0].position.x - 3 * SQUARE / 2 + 2.5f;
-			pacman_[0].rect_left.rectangle.y = pacman_[0].position.y - SQUARE / 2 + 2.5;
-
-			pacman_[0].rect_down.rectangle.height = SQUARE - 5;
-			pacman_[0].rect_up.rectangle.height = SQUARE - 5;
-			pacman_[0].rect_right.rectangle.height = SQUARE - 5;
-			pacman_[0].rect_left.rectangle.height = SQUARE - 5;
-
-			pacman_[0].rect_down.rectangle.width = SQUARE - 5;
-			pacman_[0].rect_up.rectangle.width = SQUARE - 5;
-			pacman_[0].rect_right.rectangle.width = SQUARE - 5;
-			pacman_[0].rect_left.rectangle.width = SQUARE - 5;
-
-			pacman_[0].rect_down.color = COLOR6;
-			pacman_[0].rect_up.color = COLOR6;
-			pacman_[0].rect_right.color = COLOR6;
-			pacman_[0].rect_left.color = COLOR6;
-
-			if (framesCounter % 5 == 0) {
-				if (IsKeyDown(KEY_D) && (pacman_[0].position.x + SQUARE / 2 < screenWidth) && pacman_[0].collision_right == false) {
-					pacman_[0].position.x += 40.0f;
+		if (CheckCollisionCircles(pacman_[0].position, pacman_[0].radius, food[0].position, food[0].radius)) {
+			if (food[0].coin == bitcoin) {
+				pacman_[0].point += 10;
+			}
+			else if (food[0].coin == ether) {
+				pacman_[0].point += 5;
+			}
+			else if (food[0].coin == tether) {
+				pacman_[0].point += 2;
+			}
+			else if (food[0].coin == doge) {
+				if (GetRandomValue(0, 4) % 2 == 0) {
+					pacman_[0].point += 8;
 				}
-				else if (IsKeyDown(KEY_A) && (pacman_[0].position.x - SQUARE / 2 > 0) && pacman_[0].collision_left == false) {
-					pacman_[0].position.x -= 40.0f;
-				}
-				else if (IsKeyDown(KEY_W) && (pacman_[0].position.y - SQUARE / 2 > 0) && pacman_[0].collision_up == false) {
-					pacman_[0].position.y -= 40.0f;
-				}
-				else if (IsKeyDown(KEY_S) && (pacman_[0].position.y + SQUARE / 2 < screenHeight) && pacman_[0].collision_down == false) {
-					pacman_[0].position.y += 40.0f;
+				else {
+					pacman_[0].point -= 8;
 				}
 			}
+			food[0].active = false;
+		}
+		if (!food[0].active) {
+			food[0].active = true;
+			food[0].position = (Vector2){ GetRandomValue(0, screenWidth - 1), GetRandomValue(0, screenHeight - 1) };
+			food[0].crypto_num = GetRandomValue(0, 3);
+			food[0].coin = food[0].crypto_num;
+		}
+
+	} break;
+	case multi_player:
+	{
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 38; j++) {
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_down.rectangle)) {
+					pacman_[0].collision_down = true;
+				}
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_up.rectangle)) {
+					pacman_[0].collision_up = true;
+				}
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_right.rectangle)) {
+					pacman_[0].collision_right = true;
+				}
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[0].rect_left.rectangle)) {
+					pacman_[0].collision_left = true;
+				}
+				if (CheckCollisionCircleRec(food[0].position, food[0].radius, blocks[i][j].rectangle)) {
+					food[0].active = false;
+				}
+				if (CheckCollisionCircleRec(food[1].position, food[1].radius, blocks[i][j].rectangle)) {
+					food[1].active = false;
+				}
+			}
+		}
+
+		pacman_[0].rect_down.rectangle.x = pacman_[0].position.x - SQUARE / 2 + 2.5f;
+		pacman_[0].rect_down.rectangle.y = pacman_[0].position.y + SQUARE / 2 + 2.5f;
+		pacman_[0].rect_up.rectangle.x = pacman_[0].position.x - SQUARE / 2 + 2.5f;
+		pacman_[0].rect_up.rectangle.y = pacman_[0].position.y - 3 * SQUARE / 2 + 2.5f;
+		pacman_[0].rect_right.rectangle.x = pacman_[0].position.x + SQUARE / 2 + 2.5f;
+		pacman_[0].rect_right.rectangle.y = pacman_[0].position.y - SQUARE / 2 + 2.5f;
+		pacman_[0].rect_left.rectangle.x = pacman_[0].position.x - 3 * SQUARE / 2 + 2.5f;
+		pacman_[0].rect_left.rectangle.y = pacman_[0].position.y - SQUARE / 2 + 2.5;
+
+		pacman_[0].rect_down.rectangle.height = SQUARE - 5;
+		pacman_[0].rect_up.rectangle.height = SQUARE - 5;
+		pacman_[0].rect_right.rectangle.height = SQUARE - 5;
+		pacman_[0].rect_left.rectangle.height = SQUARE - 5;
+
+		pacman_[0].rect_down.rectangle.width = SQUARE - 5;
+		pacman_[0].rect_up.rectangle.width = SQUARE - 5;
+		pacman_[0].rect_right.rectangle.width = SQUARE - 5;
+		pacman_[0].rect_left.rectangle.width = SQUARE - 5;
+
+		pacman_[0].rect_down.color = COLOR6;
+		pacman_[0].rect_up.color = COLOR6;
+		pacman_[0].rect_right.color = COLOR6;
+		pacman_[0].rect_left.color = COLOR6;
+
+		if (framesCounter % 5 == 0) {
+			if (IsKeyDown(KEY_D) && (pacman_[0].position.x + SQUARE / 2 < screenWidth) && pacman_[0].collision_right == false) {
+				pacman_[0].position.x += 40.0f;
+			}
+			else if (IsKeyDown(KEY_A) && (pacman_[0].position.x - SQUARE / 2 > 0) && pacman_[0].collision_left == false) {
+				pacman_[0].position.x -= 40.0f;
+			}
+			else if (IsKeyDown(KEY_W) && (pacman_[0].position.y - SQUARE / 2 > 0) && pacman_[0].collision_up == false) {
+				pacman_[0].position.y -= 40.0f;
+			}
+			else if (IsKeyDown(KEY_S) && (pacman_[0].position.y + SQUARE / 2 < screenHeight) && pacman_[0].collision_down == false) {
+				pacman_[0].position.y += 40.0f;
+			}
+		}
 		///////////////
 
-			for (int i = 0; i < 20; i++) {
-				for (int j = 0; j < 38; j++) {
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[1].rect_down.rectangle)) {
-						pacman_[1].collision_down = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[1].rect_up.rectangle)) {
-						pacman_[1].collision_up = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[1].rect_right.rectangle)) {
-						pacman_[1].collision_right = true;
-					}
-					if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[1].rect_left.rectangle)) {
-						pacman_[1].collision_left = true;
-					}
-					if (CheckCollisionCircleRec(food[0].position, food[0].radius, blocks[i][j].rectangle)) {
-						food[0].active = false;
-					}
-					if (CheckCollisionCircleRec(food[1].position, food[1].radius, blocks[i][j].rectangle)) {
-						food[1].active = false;
-					}
+		for (int i = 0; i < 20; i++) {
+			for (int j = 0; j < 38; j++) {
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[1].rect_down.rectangle)) {
+					pacman_[1].collision_down = true;
+				}
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[1].rect_up.rectangle)) {
+					pacman_[1].collision_up = true;
+				}
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[1].rect_right.rectangle)) {
+					pacman_[1].collision_right = true;
+				}
+				if (CheckCollisionRecs(blocks[i][j].rectangle, pacman_[1].rect_left.rectangle)) {
+					pacman_[1].collision_left = true;
+				}
+				if (CheckCollisionCircleRec(food[0].position, food[0].radius, blocks[i][j].rectangle)) {
+					food[0].active = false;
+				}
+				if (CheckCollisionCircleRec(food[1].position, food[1].radius, blocks[i][j].rectangle)) {
+					food[1].active = false;
 				}
 			}
+		}
 
-			pacman_[1].rect_down.rectangle.x = pacman_[1].position.x - SQUARE / 2 + 2.5f;
-			pacman_[1].rect_down.rectangle.y = pacman_[1].position.y + SQUARE / 2 + 2.5f;
-			pacman_[1].rect_up.rectangle.x = pacman_[1].position.x - SQUARE / 2 + 2.5f;
-			pacman_[1].rect_up.rectangle.y = pacman_[1].position.y - 3 * SQUARE / 2 + 2.5f;
-			pacman_[1].rect_right.rectangle.x = pacman_[1].position.x + SQUARE / 2 + 2.5f;
-			pacman_[1].rect_right.rectangle.y = pacman_[1].position.y - SQUARE / 2 + 2.5f;
-			pacman_[1].rect_left.rectangle.x = pacman_[1].position.x - 3 * SQUARE / 2 + 2.5f;
-			pacman_[1].rect_left.rectangle.y = pacman_[1].position.y - SQUARE / 2 + 2.5;
+		pacman_[1].rect_down.rectangle.x = pacman_[1].position.x - SQUARE / 2 + 2.5f;
+		pacman_[1].rect_down.rectangle.y = pacman_[1].position.y + SQUARE / 2 + 2.5f;
+		pacman_[1].rect_up.rectangle.x = pacman_[1].position.x - SQUARE / 2 + 2.5f;
+		pacman_[1].rect_up.rectangle.y = pacman_[1].position.y - 3 * SQUARE / 2 + 2.5f;
+		pacman_[1].rect_right.rectangle.x = pacman_[1].position.x + SQUARE / 2 + 2.5f;
+		pacman_[1].rect_right.rectangle.y = pacman_[1].position.y - SQUARE / 2 + 2.5f;
+		pacman_[1].rect_left.rectangle.x = pacman_[1].position.x - 3 * SQUARE / 2 + 2.5f;
+		pacman_[1].rect_left.rectangle.y = pacman_[1].position.y - SQUARE / 2 + 2.5;
 
-			pacman_[1].rect_down.rectangle.height = SQUARE - 5;
-			pacman_[1].rect_up.rectangle.height = SQUARE - 5;
-			pacman_[1].rect_right.rectangle.height = SQUARE - 5;
-			pacman_[1].rect_left.rectangle.height = SQUARE - 5;
+		pacman_[1].rect_down.rectangle.height = SQUARE - 5;
+		pacman_[1].rect_up.rectangle.height = SQUARE - 5;
+		pacman_[1].rect_right.rectangle.height = SQUARE - 5;
+		pacman_[1].rect_left.rectangle.height = SQUARE - 5;
 
-			pacman_[1].rect_down.rectangle.width = SQUARE - 5;
-			pacman_[1].rect_up.rectangle.width = SQUARE - 5;
-			pacman_[1].rect_right.rectangle.width = SQUARE - 5;
-			pacman_[1].rect_left.rectangle.width = SQUARE - 5;
+		pacman_[1].rect_down.rectangle.width = SQUARE - 5;
+		pacman_[1].rect_up.rectangle.width = SQUARE - 5;
+		pacman_[1].rect_right.rectangle.width = SQUARE - 5;
+		pacman_[1].rect_left.rectangle.width = SQUARE - 5;
 
-			pacman_[1].rect_down.color = COLOR6;
-			pacman_[1].rect_up.color = COLOR6;
-			pacman_[1].rect_right.color = COLOR6;
-			pacman_[1].rect_left.color = COLOR6;
+		pacman_[1].rect_down.color = COLOR6;
+		pacman_[1].rect_up.color = COLOR6;
+		pacman_[1].rect_right.color = COLOR6;
+		pacman_[1].rect_left.color = COLOR6;
 
-			if (framesCounter % 5 == 0) {
-				if (IsKeyDown(KEY_RIGHT) && (pacman_[1].position.x + SQUARE / 2 < screenWidth) && pacman_[1].collision_right == false) {
-					pacman_[1].position.x += 40.0f;
-				}
-				else if (IsKeyDown(KEY_LEFT) && (pacman_[1].position.x - SQUARE / 2 > 0) && pacman_[1].collision_left == false) {
-					pacman_[1].position.x -= 40.0f;
-				}
-				else if (IsKeyDown(KEY_UP) && (pacman_[1].position.y - SQUARE / 2 > 0) && pacman_[1].collision_up == false) {
-					pacman_[1].position.y -= 40.0f;
-				}
-				else if (IsKeyDown(KEY_DOWN) && (pacman_[1].position.y + SQUARE / 2 < screenHeight) && pacman_[1].collision_down == false) {
-					pacman_[1].position.y += 40.0f;
-				}
+		if (framesCounter % 5 == 0) {
+			if (IsKeyDown(KEY_RIGHT) && (pacman_[1].position.x + SQUARE / 2 < screenWidth) && pacman_[1].collision_right == false) {
+				pacman_[1].position.x += 40.0f;
 			}
+			else if (IsKeyDown(KEY_LEFT) && (pacman_[1].position.x - SQUARE / 2 > 0) && pacman_[1].collision_left == false) {
+				pacman_[1].position.x -= 40.0f;
+			}
+			else if (IsKeyDown(KEY_UP) && (pacman_[1].position.y - SQUARE / 2 > 0) && pacman_[1].collision_up == false) {
+				pacman_[1].position.y -= 40.0f;
+			}
+			else if (IsKeyDown(KEY_DOWN) && (pacman_[1].position.y + SQUARE / 2 < screenHeight) && pacman_[1].collision_down == false) {
+				pacman_[1].position.y += 40.0f;
+			}
+		}
 
-			for (int i = 0; i < 2; i++) {
-				for (int j = 0; j < 2; j++) {
-					if (CheckCollisionCircles(pacman_[i].position, pacman_[i].radius, food[j].position, food[j].radius)) {
-						if (food[j].coin == bitcoin) {
-							pacman_[i].point += 10;
-						}
-						else if (food[j].coin == ether) {
-							pacman_[i].point += 5;
-						}
-						else if (food[j].coin == tether) {
-							pacman_[i].point += 2;
-						}
-						else if (food[j].coin == doge) {
-							if (GetRandomValue(0, 4) % 2 == 0) {
-								pacman_[i].point += 8;
-							}
-							else {
-								pacman_[i].point -= 8;
-							}
-						}
-						food[j].active = false;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				if (CheckCollisionCircles(pacman_[i].position, pacman_[i].radius, food[j].position, food[j].radius)) {
+					if (food[j].coin == bitcoin) {
+						pacman_[i].point += 10;
 					}
+					else if (food[j].coin == ether) {
+						pacman_[i].point += 5;
+					}
+					else if (food[j].coin == tether) {
+						pacman_[i].point += 2;
+					}
+					else if (food[j].coin == doge) {
+						if (GetRandomValue(0, 4) % 2 == 0) {
+							pacman_[i].point += 8;
+						}
+						else {
+							pacman_[i].point -= 8;
+						}
+					}
+					food[j].active = false;
 				}
 			}
-			for (int i = 0; i < 2; i++) {
-				if (!food[i].active) {
-					food[i].active = true;
-					food[i].position = (Vector2){ GetRandomValue(0, screenWidth - 1), GetRandomValue(0, screenHeight - 1) };
-					food[i].crypto_num = GetRandomValue(0, 3);
-					food[i].coin = food[i].crypto_num;
-				}
+		}
+		for (int i = 0; i < 2; i++) {
+			if (!food[i].active) {
+				food[i].active = true;
+				food[i].position = (Vector2){ GetRandomValue(0, screenWidth - 1), GetRandomValue(0, screenHeight - 1) };
+				food[i].crypto_num = GetRandomValue(0, 3);
+				food[i].coin = food[i].crypto_num;
 			}
-		} break;
-		default: break;
+		}
+	} break;
+	default: break;
 	}
-	
+
 	for (int i = 0; i < 2; i++) {
 		pacman_[i].collision_down = false;
 		pacman_[i].collision_up = false;
@@ -454,10 +454,10 @@ void InitGame() {
 	pacman_[0].position.y = (float)screenHeight / 2 + SQUARE / 2;
 	pacman_[0].radius = 19.5;
 	pacman_[0].color = YELLOW;
-	
+
 	//pacman1
 	pacman_[1].position.x = (float)screenWidth / 2 + -SQUARE / 2;
-	pacman_[1].position.y = (float)screenHeight / 2 - 3*SQUARE / 2;
+	pacman_[1].position.y = (float)screenHeight / 2 - 3 * SQUARE / 2;
 	pacman_[1].radius = 19.5;
 	pacman_[1].color = GREEN;
 
@@ -496,8 +496,8 @@ void InitGame() {
 	{
 		if (i == 0) {
 			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/btc_resized.png"); // Load image data into CPU memory (RAM)}
-		}  
-		else if(i == 1){
+		}
+		else if (i == 1) {
 			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/etherium.png");  // Load image data into CPU memory (RAM)}
 		}
 		else if (i == 2) {
@@ -506,7 +506,7 @@ void InitGame() {
 		else if (i == 3) {
 			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/dogecoin.png");  // Load image data into CPU memory (RAM)}
 		}
-		
+
 		texture[i] = LoadTextureFromImage(image[i]);       // Image converted to texture, GPU memory (RAM -> VRAM)
 		UnloadImage(image[i]);                                    // Unload image data from CPU memory (RAM)
 
@@ -519,11 +519,11 @@ void InitGame() {
 }
 
 void draw_first_pacman_game() {
-		DrawRectangle(pacman_[0].rect_right.rectangle.x, pacman_[0].rect_right.rectangle.y, pacman_[0].rect_right.rectangle.width, pacman_[0].rect_right.rectangle.height, pacman_[0].rect_right.color); //right
-		DrawRectangle(pacman_[0].rect_left.rectangle.x, pacman_[0].rect_left.rectangle.y, pacman_[0].rect_left.rectangle.width, pacman_[0].rect_left.rectangle.height, pacman_[0].rect_left.color); //left
-		DrawRectangle(pacman_[0].rect_up.rectangle.x, pacman_[0].rect_up.rectangle.y, pacman_[0].rect_up.rectangle.width, pacman_[0].rect_up.rectangle.height, pacman_[0].rect_up.color); //up
-		DrawRectangle(pacman_[0].rect_down.rectangle.x, pacman_[0].rect_down.rectangle.y, pacman_[0].rect_down.rectangle.width, pacman_[0].rect_down.rectangle.height, pacman_[0].rect_down.color); //down
-	
+	//DrawRectangle(pacman_[0].rect_right.rectangle.x, pacman_[0].rect_right.rectangle.y, pacman_[0].rect_right.rectangle.width, pacman_[0].rect_right.rectangle.height, pacman_[0].rect_right.color); //right
+	//DrawRectangle(pacman_[0].rect_left.rectangle.x, pacman_[0].rect_left.rectangle.y, pacman_[0].rect_left.rectangle.width, pacman_[0].rect_left.rectangle.height, pacman_[0].rect_left.color); //left
+	//DrawRectangle(pacman_[0].rect_up.rectangle.x, pacman_[0].rect_up.rectangle.y, pacman_[0].rect_up.rectangle.width, pacman_[0].rect_up.rectangle.height, pacman_[0].rect_up.color); //up
+	//DrawRectangle(pacman_[0].rect_down.rectangle.x, pacman_[0].rect_down.rectangle.y, pacman_[0].rect_down.rectangle.width, pacman_[0].rect_down.rectangle.height, pacman_[0].rect_down.color); //down
+
 	if (current_screen == single_player) {
 		if ((IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))) {
 			DrawCircleSector(pacman_[0].position, pacman_[0].radius, 0, 45, 360, pacman_[0].color);
@@ -559,7 +559,7 @@ void draw_first_pacman_game() {
 		}
 	}
 	draw_food(food[0]);
-	
+
 	DrawText(TextFormat("Pacman1: %i", pacman_[0].point), 750, 0, 40, RAYWHITE);
 	DrawText(TextFormat("Timer: %1i", timeCounter), 20, 700, 40, RED);
 }
@@ -569,7 +569,7 @@ void draw_second_pacman_game() {
 	DrawRectangle(pacman_[1].rect_left.rectangle.x, pacman_[1].rect_left.rectangle.y, pacman_[1].rect_left.rectangle.width, pacman_[1].rect_left.rectangle.height, pacman_[1].rect_left.color); //left
 	DrawRectangle(pacman_[1].rect_up.rectangle.x, pacman_[1].rect_up.rectangle.y, pacman_[1].rect_up.rectangle.width, pacman_[1].rect_up.rectangle.height, pacman_[1].rect_up.color); //up
 	DrawRectangle(pacman_[1].rect_down.rectangle.x, pacman_[1].rect_down.rectangle.y, pacman_[1].rect_down.rectangle.width, pacman_[1].rect_down.rectangle.height, pacman_[1].rect_down.color); //down
-	
+
 	if (IsKeyDown(KEY_DOWN)) {
 		DrawCircleSector(pacman_[1].position, pacman_[1].radius, 0, 45, 360, pacman_[1].color);
 		DrawCircleSector(pacman_[1].position, pacman_[1].radius, 135, 360, 360, pacman_[1].color);
@@ -590,7 +590,7 @@ void draw_second_pacman_game() {
 	DrawText(TextFormat("Pacman2: %i", pacman_[1].point), 1150, 0, 40, RAYWHITE);
 }
 
-void draw_food(bait food){
+void draw_food(bait food) {
 	/*for (size_t i = 0; i < 3; i++)
 	{
 		DrawTexture(texture[i], food.position.x - 15, food.position.y - 15, WHITE);
