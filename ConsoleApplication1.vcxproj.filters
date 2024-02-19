@@ -32,5 +32,11 @@
     <Image Include="dogecoin.png">
       <Filter>Source Files</Filter>
     </Image>
+    <Image Include="arrows.png">
+      <Filter>Source Files</Filter>
+    </Image>
+    <Image Include="wasd.png">
+      <Filter>Source Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

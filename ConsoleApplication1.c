@@ -1,5 +1,6 @@
 ﻿#include <raylib.h>
-#include <raymath.h>
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
 
 #define SQUARE 40
 #define COLOR1 (Color){ 3, 6, 45, 255 } 
@@ -48,14 +49,24 @@ typedef struct pacman {
 
 static GameScreen current_screen = starting_screen;
 
-static Image image[4];
-static Texture2D texture[4];
+//image loading 
+static Image image[6];
+static Texture2D texture[6];
 
 static int x_counter = 0;
 static pacman pacman_[2];
 static bait food[2] = { 0 };
 static block blocks[20][38] = { 0 };
 static bool gameOver;
+
+char button_single_text[] = "Single Player";
+char button_multi_text[] = "Multi Player";
+bool button_single_Clicked = false;
+bool button_multi_Clicked = false;
+
+float timerSinceMultiButtonPressed = 0.0f;
+float timerSinceSingleButtonPressed = 0.0f;
+float timerGame = 0.0f;
 
 static int matrix[20][38] = { {1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 							  {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -137,11 +148,66 @@ void drawGame() {
 	switch (current_screen)
 	{
 	case starting_screen:
-	{
-		DrawRectangle(screenWidth / 2 - 40, screenHeight / 2 - 80, 780, 140, COLOR6);
-		DrawText("FOR SINGLEPLAYER PRESS 'SPACE'", screenWidth / 2 - 20, screenHeight / 2 - 20, 40, GOLD);
-		DrawText("FOR MULTIPLAYER PRESS 'ENTER'", screenWidth / 2 - 20, screenHeight / 2 - 60, 40, GOLD);
+	{	
+		DrawRectangle(screenWidth / 2 - 200, screenHeight / 2 - 200, 400, 400, COLOR6);
 
+		if(!button_single_Clicked){
+			if (GuiButton((Rectangle) { screenWidth / 2 - 50, screenHeight / 2 - 25, 100, 50 }, button_multi_text)) {
+				button_multi_Clicked = !button_multi_Clicked;
+				timerSinceMultiButtonPressed = 0.0f;  // Reset timer
+				strcpy(button_multi_text, "Clicked!");
+			}
+
+			if (button_multi_Clicked) {
+				timerSinceMultiButtonPressed += GetFrameTime();
+				if (timerSinceMultiButtonPressed >= 5.0f) {
+					button_multi_Clicked = true;
+					//strcpy(button_multi_text, "Click me!"); // Optionally reset button text
+				}
+			}
+
+			if (button_multi_Clicked) {
+				DrawText("Player1", 200, 240, 30, GOLD);
+				DrawText("Player2", 1200, 240, 30, GOLD);
+				DrawTexture(texture[4], 120, 320, WHITE);  // Draw the texture for 5 seconds
+				DrawTexture(texture[5], 1120, 320, WHITE);  // Draw the texture for 5 seconds
+			}
+		}
+
+		if(!button_multi_Clicked){
+			if (GuiButton((Rectangle) { screenWidth / 2 - 50, screenHeight / 2 - 125, 100, 50 }, button_single_text)) {
+				button_single_Clicked = !button_single_Clicked;
+				timerSinceSingleButtonPressed = 0.0f;  // Reset timer
+				strcpy(button_single_text, "Clicked!");
+			}
+			if (button_single_Clicked) {
+				timerSinceSingleButtonPressed += GetFrameTime();
+				if (timerSinceSingleButtonPressed >= 5.0f) {
+					button_single_Clicked = true;
+					//strcpy(button_multi_text, "Click me!"); // Optionally reset button text
+				}
+			}
+			if (button_single_Clicked) {
+				DrawText("Player1", 200, 240, 30, GOLD);
+				DrawText("Ghost", 1200, 240, 30, GOLD);
+				DrawTexture(texture[4], 120, 320, WHITE);  // Draw the texture for 5 seconds
+				DrawTexture(texture[5], 120, 480, WHITE);  // Draw the texture for 5 seconds
+			}
+		}
+		if (button_multi_Clicked || button_single_Clicked) {
+			timerGame += GetFrameTime();
+		}
+		if (button_multi_Clicked || button_single_Clicked) {
+			DrawText(TextFormat("%.2f", 3 - timerGame), 720, 640, 60, GOLD);
+		}
+		if (timerGame > 3.0f) {
+			if (button_single_Clicked) {
+				current_screen = single_player;
+			}
+			else if (button_multi_Clicked) {
+				current_screen = multi_player;
+			}
+		}
 	} break;
 	case single_player:
 	{
@@ -492,7 +558,7 @@ void InitGame() {
 	}
 
 	//btc
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		if (i == 0) {
 			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/btc_resized.png"); // Load image data into CPU memory (RAM)}
@@ -505,6 +571,12 @@ void InitGame() {
 		}
 		else if (i == 3) {
 			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/dogecoin.png");  // Load image data into CPU memory (RAM)}
+		}
+		else if (i == 4) {
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/wasd.png");  // Load image data into CPU memory (RAM)}
+		}
+		else if (i == 5) {
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/arrows.png");  // Load image data into CPU memory (RAM)}
 		}
 
 		texture[i] = LoadTextureFromImage(image[i]);       // Image converted to texture, GPU memory (RAM -> VRAM)
@@ -560,7 +632,7 @@ void draw_first_pacman_game() {
 	}
 	draw_food(food[0]);
 
-	DrawText(TextFormat("Pacman1: %i", pacman_[0].point), 750, 0, 40, RAYWHITE);
+	DrawText(TextFormat("Pacman1: %i", pacman_[0].point), 210, 0, 40, RAYWHITE);
 	DrawText(TextFormat("Timer: %1i", timeCounter), 20, 700, 40, RED);
 }
 
@@ -610,3 +682,59 @@ void draw_food(bait food) {
 	}
 	//DrawCircleV(food.position, food.radius, food.color);
 }
+
+//#include "raylib.h"
+//#define RAYGUI_IMPLEMENTATION
+//#include "raygui.h"
+//
+//int main(void) {
+//    // Initialization
+//    const int screenWidth = 800;
+//    const int screenHeight = 450;
+//    InitWindow(screenWidth, screenHeight, "raylib - Show Image on Button Press");
+//
+//    // Load texture
+//    Texture2D image = LoadTexture("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/wasd_1.png"); // Replace with your image path
+//
+//    bool buttonPressed = false;
+//    float timeSinceButtonPressed = 0.0f;
+//
+//    SetTargetFPS(60);
+//
+//    // Main game loop
+//    while (!WindowShouldClose()) {
+//        // Update
+//
+//        BeginDrawing();
+//        ClearBackground(RAYWHITE);
+//
+//        if (GuiButton((Rectangle) { 10, 10, 125, 30 }, "Show Image")) {
+//            buttonPressed = true;
+//            timeSinceButtonPressed = 0.0f; // Reset the timer
+//        }
+//
+//        if (buttonPressed) {
+//            timeSinceButtonPressed += GetFrameTime();
+//            if (timeSinceButtonPressed >= 5.0f) { // 5 seconds
+//                buttonPressed = false;
+//            }
+//        }
+//
+//        // Draw
+//        
+//
+//        if (buttonPressed) {
+//            // Draw the image
+//            DrawTexture(image, screenWidth / 2 - image.width / 2, screenHeight / 2 - image.height / 2, WHITE);
+//        }
+//
+//        // Other drawing...
+//        EndDrawing();
+//    }
+//
+//    // De-Initialization
+//    UnloadTexture(image); // Unload texture
+//    CloseWindow();
+//
+//    return 0;
+//}
