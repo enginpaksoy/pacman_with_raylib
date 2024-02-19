@@ -559,22 +559,22 @@ void InitGame() {
 	for (int i = 0; i < 6; i++)
 	{
 		if (i == 0) {
-			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/btc_resized.png"); // Load image data into CPU memory (RAM)}
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/png/btc_resized.png"); // Load image data into CPU memory (RAM)}
 		}
 		else if (i == 1) {
-			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/etherium.png");  // Load image data into CPU memory (RAM)}
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/png/etherium.png");  // Load image data into CPU memory (RAM)}
 		}
 		else if (i == 2) {
-			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/tether.png");  // Load image data into CPU memory (RAM)}
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/png/tether.png");  // Load image data into CPU memory (RAM)}
 		}
 		else if (i == 3) {
-			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/dogecoin.png");  // Load image data into CPU memory (RAM)}
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/png/dogecoin.png");  // Load image data into CPU memory (RAM)}
 		}
 		else if (i == 4) {
-			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/wasd.png");  // Load image data into CPU memory (RAM)}
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/png/wasd.png");  // Load image data into CPU memory (RAM)}
 		}
 		else if (i == 5) {
-			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/arrows.png");  // Load image data into CPU memory (RAM)}
+			image[i] = LoadImage("C:/Users/Engin Paksoy/source/repos/ConsoleApplication1/png/arrows.png");  // Load image data into CPU memory (RAM)}
 		}
 
 		texture[i] = LoadTextureFromImage(image[i]);       // Image converted to texture, GPU memory (RAM -> VRAM)
